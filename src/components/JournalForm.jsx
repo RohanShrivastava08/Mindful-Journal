@@ -5,6 +5,8 @@ import {
 import { MdCalendarToday, MdAccessTime } from 'react-icons/md';
 import { format } from 'date-fns';
 
+const emojiOptions = ['😊', '😢', '❤️', '😐', '😠', '🌟', '👍', '💭', '🔥', '🎯', '🙏', '😴', '💡'];
+
 const JournalForm = ({ onSubmit }) => {
   const [entry, setEntry] = useState('');
   const [tags, setTags] = useState([]);
@@ -12,6 +14,7 @@ const JournalForm = ({ onSubmit }) => {
   const [mood, setMood] = useState('');
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(format(new Date(), 'HH:mm'));
+  const [image, setImage] = useState(null);
 
   const handleTagKeyDown = (e) => {
     if (e.key === 'Enter' && tagInput.trim()) {
@@ -21,16 +24,28 @@ const JournalForm = ({ onSubmit }) => {
     }
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+    }
+  };
+
+  const handleEmojiClick = (emoji) => {
+    setEntry(entry + emoji);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (entry.trim()) {
       const formattedDate = format(date, 'yyyy-MM-dd');
-      onSubmit(entry, tags, formattedDate, time, mood);
+      onSubmit(entry, tags, formattedDate, time, mood, image);
       setEntry('');
       setTags([]);
       setTagInput('');
       setMood('');
       setTime(format(new Date(), 'HH:mm'));
+      setImage(null);
     }
   };
 
@@ -66,7 +81,7 @@ const JournalForm = ({ onSubmit }) => {
         ))}
       </div>
 
-      {/* Date and Time Pickers */}
+      {/* Date and Time */}
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <div className="flex items-center gap-2 w-full">
           <MdCalendarToday className="text-xl text-blue-500" />
@@ -88,7 +103,7 @@ const JournalForm = ({ onSubmit }) => {
         </div>
       </div>
 
-      {/* Tag Input */}
+      {/* Tags */}
       <div className="mb-4">
         <input
           type="text"
@@ -112,14 +127,45 @@ const JournalForm = ({ onSubmit }) => {
 
       {/* Journal Entry */}
       <textarea
-        className="w-full h-40 p-4 rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white mb-6 focus:outline-none"
+        className="w-full h-40 p-4 rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white mb-4 focus:outline-none"
         placeholder="Write your thoughts..."
         value={entry}
         onChange={(e) => setEntry(e.target.value)}
         required
       />
 
-      {/* Submit Button */}
+      {/* Emoji Picker */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {emojiOptions.map((emoji, index) => (
+          <button
+            key={index}
+            type="button"
+            onClick={() => handleEmojiClick(emoji)}
+            className="text-2xl p-2 hover:scale-110 transition-transform rounded-md"
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
+
+      {/* Image Upload */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Add Image (optional)</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+              file:rounded-full file:border-0
+              file:text-sm file:font-semibold
+              file:bg-blue-100 dark:file:bg-blue-700 file:text-blue-700 dark:file:text-white hover:file:bg-blue-200"
+        />
+        {image && (
+          <img src={image} alt="Uploaded preview" className="mt-4 max-w-full h-auto rounded-lg shadow-md" />
+        )}
+      </div>
+
+      {/* Submit */}
       <div className="text-center">
         <button
           type="submit"

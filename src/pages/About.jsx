@@ -5,10 +5,10 @@ const About = () => {
     <div className="bg-gradient-to-br from-blue-100 via-green-200 to-white dark:bg-gradient-to-br dark:from-gray-800 dark:via-gray-800 dark:to-black min-h-screen py-12 px-6">
       
       {/* About the Project */}
-      <section className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-16">
-        <h1 className="text-4xl font-extrabold text-center text-gray-800 dark:text-gray-200 mb-8">
-          About Mindful Journal
-        </h1>
+      <section className="max-w-5xl mx-auto px-6 sm:px-10 py-16 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl transition-colors duration-500 mb-20">
+      <h1 className="text-5xl font-extrabold text-center mb-6 text-blue-800 dark:text-blue-400 transition-all duration-300 hover:text-blue-600 dark:hover:text-blue-300">
+        About <span className="text-blue-500 dark:text-blue-300">Mindful Journal</span>
+      </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
           Mindful Journal is a comprehensive journaling and mental wellness app designed to support users in their journey
           toward emotional well-being and self-improvement. With intuitive journaling features, calming design elements, 
@@ -166,6 +166,62 @@ const About = () => {
             alt="Mindful Journal Community"
             className="rounded-xl shadow-lg w-full max-w-md"
           />
+        </div>
+      </section>
+
+      {/* Benefits of Journaling & Mindfulness */}
+<section className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-16">
+  <h2 className="text-3xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-8">
+    Benefits of Journaling & Mindfulness
+  </h2>
+
+  <div className="space-y-6 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+    <p>
+      Journaling is a scientifically-backed habit that helps individuals process emotions, clarify thoughts, and manage mental health. When combined with mindfulness, it becomes a powerful tool for emotional awareness and healing.
+    </p>
+    
+    <ul className="list-disc list-inside pl-4 space-y-3">
+      <li><strong>Reduces stress and anxiety:</strong> Writing down your thoughts helps offload emotional tension and bring mental clarity.</li>
+      <li><strong>Boosts self-awareness:</strong> Daily reflection encourages understanding of patterns in mood, triggers, and responses.</li>
+      <li><strong>Improves emotional regulation:</strong> Tracking emotions enables better management of highs and lows.</li>
+      <li><strong>Strengthens memory and cognitive function:</strong> The act of journaling enhances mental clarity and focus.</li>
+      <li><strong>Encourages gratitude and positivity:</strong> Prompts and gratitude logs help reframe your mindset toward the good.</li>
+    </ul>
+
+    <p>
+      Mindful Journal is designed to make these benefits accessible, engaging, and sustainable for everyone — whether you're just starting or continuing your wellness journey.
+    </p>
+  </div>
+
+  <div className="flex justify-center mt-8">
+    <img
+      src="https://images.pexels.com/photos/1557238/pexels-photo-1557238.jpeg?auto=compress&cs=tinysrgb&w=600"
+      alt="Mindful Benefits"
+      className="rounded-xl shadow-lg w-full max-w-md"
+    />
+  </div>
+</section>
+
+ {/* Timeline / Flowchart Section */}
+ <section className="max-w-4xl mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-10 mb-16">
+        <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">
+          Your Daily Flow with Mindful Journal
+        </h2>
+        <div className="space-y-6">
+          {[
+            { step: "🧘‍♀️ Morning Check-in", desc: "Start your day with a quick emotion check-in and intention setting." },
+            { step: "📝 Midday Reflection", desc: "Take a pause and reflect on your thoughts and focus." },
+            { step: "🌇 Evening Journaling", desc: "Write about your day, track your mood, and express your thoughts." },
+            { step: "📈 Analyze & Improve", desc: "Review past entries to spot emotional patterns and personal growth." },
+          ].map(({ step, desc }, i) => (
+            <div key={i} className="flex items-start gap-4 border-l-4 border-blue-500 pl-4 py-2 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-all">
+              <div className="text-2xl">{step.split(" ")[0]}</div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">{step}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>
