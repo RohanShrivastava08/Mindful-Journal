@@ -59,6 +59,13 @@ const Navbar = () => {
             </Link>
           ))}
 
+          {/* Login Button */}
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition duration-300"
+          >
+            Login
+          </button>
+
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
@@ -96,6 +103,15 @@ const Navbar = () => {
               {link.name}
             </Link>
           ))}
+
+          {/* Login Button in Mobile Menu */}
+          <button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition duration-300"
+          >
+            Login
+          </button>
+
+          {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
             className="flex items-center gap-2 text-lg mt-4 text-gray-700 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition duration-300"
