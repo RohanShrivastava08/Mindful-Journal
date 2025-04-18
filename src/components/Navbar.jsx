@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaMoon, FaSun, FaBars, FaTimes } from 'react-icons/fa';
+import { useAuth } from '../contexts/AuthContext'; // 👈 use from AuthContext
 
-const Navbar = () => {
-  const [isDark, setIsDark] = useState(() =>
-    localStorage.getItem('theme') === 'dark'
-  );
+const Navbar = ({ darkMode, setDarkMode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { currentUser } = useAuth(); // 👈 get currentUser
+  const isLoggedIn = !!currentUser;
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDark]);
-
-  const toggleDarkMode = () => setIsDark(!isDark);
   const toggleMenu = () => setMenuOpen(!menuOpen);
-  const closeMenu = () => setMenuOpen(false);
+
+  const handleLogout = async () => {
+    try {
+      await import('firebase/auth').then(({ signOut }) => signOut());
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -32,7 +30,6 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-white/40 dark:bg-gray-900/40 border-b border-white/10 dark:border-gray-800/30 shadow-sm transition-all duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
-
         {/* Logo */}
         <Link
           to="/"
@@ -47,7 +44,6 @@ const Navbar = () => {
             <Link
               key={link.name}
               to={link.path}
-              onClick={closeMenu}
               className={`relative group text-lg font-medium transition-all duration-300 ${
                 location.pathname === link.path
                   ? 'text-blue-600 dark:text-blue-400'
@@ -59,21 +55,34 @@ const Navbar = () => {
             </Link>
           ))}
 
-          {/* Login Button */}
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition duration-300"
-          >
-            Login
-          </button>
-
           {/* Dark Mode Toggle */}
           <button
-            onClick={toggleDarkMode}
+            onClick={() => setDarkMode(!darkMode)}
             className="ml-4 text-xl text-gray-700 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition duration-300"
             aria-label="Toggle Dark Mode"
           >
-            {isDark ? <FaSun /> : <FaMoon />}
+            {darkMode ? <FaSun /> : <FaMoon />}
           </button>
+
+          {/* Auth Section */}
+          {isLoggedIn ? (
+            <>
+              <span className="ml-4 text-sm text-gray-600 dark:text-gray-300">{currentUser.email}</span>
+              <button
+                onClick={handleLogout}
+                className="ml-4 text-sm bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="ml-4 px-5 py-2 border-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 rounded-md hover:bg-blue-600 hover:text-white transition duration-300"
+            >
+              Login
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Icon */}
@@ -93,32 +102,42 @@ const Navbar = () => {
             <Link
               key={link.name}
               to={link.path}
-              onClick={closeMenu}
               className={`block text-lg font-medium transition-all duration-300 ${
                 location.pathname === link.path
                   ? 'text-blue-600 dark:text-blue-400'
                   : 'text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400'
               }`}
+              onClick={() => setMenuOpen(false)}
             >
               {link.name}
             </Link>
           ))}
-
-          {/* Login Button in Mobile Menu */}
           <button
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition duration-300"
-          >
-            Login
-          </button>
-
-          {/* Dark Mode Toggle */}
-          <button
-            onClick={toggleDarkMode}
+            onClick={() => setDarkMode(!darkMode)}
             className="flex items-center gap-2 text-lg mt-4 text-gray-700 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition duration-300"
           >
-            {isDark ? <FaSun /> : <FaMoon />}
-            {isDark ? 'Light Mode' : 'Dark Mode'}
+            {darkMode ? <FaSun /> : <FaMoon />}
+            {darkMode ? 'Light Mode' : 'Dark Mode'}
           </button>
+          {isLoggedIn ? (
+            <button
+              onClick={() => {
+                handleLogout();
+                setMenuOpen(false);
+              }}
+              className="w-full text-center mt-4 text-white bg-red-500 hover:bg-red-600 px-6 py-2 rounded-md shadow-md transition-all duration-300"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="block text-center mt-4 text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-md shadow-md transition-all duration-300"
+              onClick={() => setMenuOpen(false)}
+            >
+              Login
+            </Link>
+          )}
         </div>
       )}
     </nav>
