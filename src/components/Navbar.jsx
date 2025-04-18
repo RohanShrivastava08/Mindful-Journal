@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaMoon, FaSun, FaBars, FaTimes } from 'react-icons/fa';
-import { useAuth } from '../contexts/AuthContext'; // 👈 use from AuthContext
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = ({ darkMode, setDarkMode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { currentUser } = useAuth(); // 👈 get currentUser
+  const { currentUser, logout } = useAuth();
   const isLoggedIn = !!currentUser;
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   const handleLogout = async () => {
     try {
-      await import('firebase/auth').then(({ signOut }) => signOut());
-      navigate('/');
+      await logout();
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -26,6 +26,10 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     { name: 'Journal', path: '/journal' },
     { name: 'About', path: '/about' },
   ];
+
+  if (isLoggedIn) {
+    navLinks.push({ name: 'Dashboard', path: '/dashboard' });
+  }
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-white/40 dark:bg-gray-900/40 border-b border-white/10 dark:border-gray-800/30 shadow-sm transition-all duration-500">
@@ -112,6 +116,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               {link.name}
             </Link>
           ))}
+
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="flex items-center gap-2 text-lg mt-4 text-gray-700 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition duration-300"
@@ -119,6 +124,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             {darkMode ? <FaSun /> : <FaMoon />}
             {darkMode ? 'Light Mode' : 'Dark Mode'}
           </button>
+
           {isLoggedIn ? (
             <button
               onClick={() => {
