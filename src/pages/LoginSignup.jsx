@@ -32,7 +32,7 @@ const LoginSignup = () => {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         if (user.emailVerified) {
-          navigate('/');
+          navigate('/dashboard');
         } else {
           setError('⚠️ Please verify your email before logging in.');
         }
