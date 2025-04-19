@@ -37,15 +37,18 @@ const JournalForm = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (entry.trim()) {
+    if (entry.trim() && mood) {  // Ensure mood is selected and entry is not empty
       const formattedDate = format(date, 'yyyy-MM-dd');
       onSubmit(entry, tags, formattedDate, time, mood, image);
+      // Reset form fields
       setEntry('');
       setTags([]);
       setTagInput('');
       setMood('');
       setTime(format(new Date(), 'HH:mm'));
       setImage(null);
+    } else {
+      alert('Please fill in the entry and select a mood!');
     }
   };
 
