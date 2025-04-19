@@ -8,7 +8,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentUser, logout } = useAuth();
+
   const isLoggedIn = !!currentUser;
+  const firstName = currentUser?.displayName?.split(' ')[0] || '';
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -34,7 +36,6 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-white/40 dark:bg-gray-900/40 border-b border-white/10 dark:border-gray-800/30 shadow-sm transition-all duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
-        {/* Logo */}
         <Link
           to="/"
           className="text-2xl font-bold text-blue-600 dark:text-blue-400 tracking-tight hover:tracking-widest transition-all duration-500"
@@ -42,7 +43,6 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           Mindful Journal
         </Link>
 
-        {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8 items-center">
           {navLinks.map((link) => (
             <Link
@@ -59,7 +59,6 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             </Link>
           ))}
 
-          {/* Dark Mode Toggle */}
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="ml-4 text-xl text-gray-700 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition duration-300"
@@ -68,10 +67,11 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             {darkMode ? <FaSun /> : <FaMoon />}
           </button>
 
-          {/* Auth Section */}
           {isLoggedIn ? (
             <>
-              <span className="ml-4 text-sm text-gray-600 dark:text-gray-300">{currentUser.email}</span>
+              <span className="ml-4 text-sm font-medium text-gray-600 dark:text-gray-300">
+                👤 {firstName}
+              </span>
               <button
                 onClick={handleLogout}
                 className="ml-4 text-sm bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
@@ -89,7 +89,6 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           )}
         </div>
 
-        {/* Mobile Menu Icon */}
         <button
           onClick={toggleMenu}
           className="md:hidden text-2xl text-gray-700 dark:text-gray-200"
@@ -99,7 +98,6 @@ const Navbar = ({ darkMode, setDarkMode }) => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden px-6 pb-6 pt-2 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl transition-all duration-500 space-y-4 border-t border-white/20 dark:border-gray-800">
           {navLinks.map((link) => (

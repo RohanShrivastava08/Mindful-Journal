@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   sendEmailVerification,
+  updateProfile,
 } from 'firebase/auth';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +13,7 @@ import { auth } from '../firebase';
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isPasswordReset, setIsPasswordReset] = useState(false);
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -20,6 +22,13 @@ const LoginSignup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Basic validation
+    if (!email || (!isPasswordReset && !password) || (!isLogin && !fullName)) {
+      setError('❌ All fields are required.');
+      return;
+    }
+
     try {
       if (isPasswordReset) {
         await sendPasswordResetEmail(auth, email);
@@ -38,9 +47,13 @@ const LoginSignup = () => {
         }
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: fullName });
         await sendEmailVerification(userCredential.user);
         setError('📨 Verification email sent! Please check your inbox.');
         setIsLogin(true);
+        setFullName('');
+        setEmail('');
+        setPassword('');
       }
     } catch (err) {
       handleFirebaseError(err);
@@ -86,6 +99,16 @@ const LoginSignup = () => {
         )}
 
         <div className="space-y-4">
+          {!isLogin && !isPasswordReset && (
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          )}
           <input
             type="email"
             placeholder="Email"
@@ -146,7 +169,12 @@ const LoginSignup = () => {
           ) : (
             <p
               className="text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
-              onClick={() => setIsLogin(true)}
+              onClick={() => {
+                setIsLogin(true);
+                setFullName('');
+                setEmail('');
+                setPassword('');
+              }}
             >
               🔓 Already have an account? Login
             </p>
